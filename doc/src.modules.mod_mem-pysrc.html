@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.modules.mod_mem</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Package&nbsp;src</a> ::
+        <a href="src.modules-module.html">Package&nbsp;modules</a> ::
+        Module&nbsp;mod_mem
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="src.modules.mod_mem-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.modules.mod_mem-module.html">Module src.modules.mod_mem</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring">Created on 2013-4-16</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-docstring">@author: seven</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package src=src-module.html"><a title="src" class="py-name" href="#" onclick="return doclink('link-0', 'src', 'link-0');">src</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Module src.argparser=src.argparser-module.html,Class src.argparser.argparser=src.argparser.argparser-class.html"><a title="src.argparser
+src.argparser.argparser" class="py-name" href="#" onclick="return doclink('link-1', 'argparser', 'link-1');">argparser</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Module src.define=src.define-module.html"><a title="src.define" class="py-name" href="#" onclick="return doclink('link-2', 'define', 'link-2');">define</a></tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">re</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="src" class="py-name" href="#" onclick="return doclink('link-3', 'src', 'link-0');">src</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module src.output=src.output-module.html"><a title="src.output" class="py-name" href="#" onclick="return doclink('link-4', 'output', 'link-4');">output</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Class src.output.Output=src.output.Output-class.html"><a title="src.output.Output" class="py-name" href="#" onclick="return doclink('link-5', 'Output', 'link-5');">Output</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"> </tt>
+<a name="mem"></a><div id="mem-def"><a name="L10"></a><tt class="py-lineno">10</tt> <a class="py-toggle" href="#" id="mem-toggle" onclick="return toggle('mem');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.modules.mod_mem.mem-class.html">mem</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="mem-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="mem-expanded"><a name="mem.__init__"></a><div id="mem.__init__-def"><a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="mem.__init__-toggle" onclick="return toggle('mem.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.modules.mod_mem.mem-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">main</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="mem.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="mem.__init__-expanded"><a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">        <tt class="py-name">main</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method src.argparser.argparser.add_argument()=src.argparser.argparser-class.html#add_argument,Method src.msar.msar.add_argument()=src.msar.msar-class.html#add_argument"><a title="src.argparser.argparser.add_argument
+src.msar.msar.add_argument" class="py-name" href="#" onclick="return doclink('link-6', 'add_argument', 'link-6');">add_argument</a></tt><tt class="py-op">(</tt><tt class="py-string">''</tt><tt class="py-op">,</tt> <tt class="py-string">'--mem'</tt><tt class="py-op">,</tt> <tt id="link-7" class="py-name" targets="Variable src.argparser.argument.action=src.argparser.argument-class.html#action"><a title="src.argparser.argument.action" class="py-name" href="#" onclick="return doclink('link-7', 'action', 'link-7');">action</a></tt><tt class="py-op">=</tt><tt id="link-8" class="py-name"><a title="src.argparser
+src.argparser.argparser" class="py-name" href="#" onclick="return doclink('link-8', 'argparser', 'link-1');">argparser</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Variable src.argparser.ACTION_SWITCH=src.argparser-module.html#ACTION_SWITCH"><a title="src.argparser.ACTION_SWITCH" class="py-name" href="#" onclick="return doclink('link-9', 'ACTION_SWITCH', 'link-9');">ACTION_SWITCH</a></tt><tt class="py-op">,</tt> <tt id="link-10" class="py-name" targets="Variable src.argparser.argument.help=src.argparser.argument-class.html#help"><a title="src.argparser.argument.help" class="py-name" href="#" onclick="return doclink('link-10', 'help', 'link-10');">help</a></tt><tt class="py-op">=</tt><tt class="py-string">'Collect Mem usage'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">         </tt>
+<a name="mem.__call__"></a><div id="mem.__call__-def"><a name="L14"></a><tt class="py-lineno">14</tt> <a class="py-toggle" href="#" id="mem.__call__-toggle" onclick="return toggle('mem.__call__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.modules.mod_mem.mem-class.html#__call__">__call__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="mem.__call__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="mem.__call__-expanded"><a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt class="py-name">ret</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-name">f</tt> <tt class="py-op">=</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt id="link-11" class="py-name"><a title="src.define" class="py-name" href="#" onclick="return doclink('link-11', 'define', 'link-2');">define</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Variable src.define.MEMINFO=src.define-module.html#MEMINFO"><a title="src.define.MEMINFO" class="py-name" href="#" onclick="return doclink('link-12', 'MEMINFO', 'link-12');">MEMINFO</a></tt><tt class="py-op">,</tt> <tt class="py-string">'r'</tt><tt class="py-op">)</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-name">p</tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-string">r'\w*:\s*(?P&lt;total&gt;\d*).*\n\w*:\s*(?P&lt;free&gt;\d*).*\n\w*:\s*(?P&lt;buffer&gt;\d*).*\n\w*:\s*(?P&lt;cache&gt;\d*).*\n'</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-name">res</tt> <tt class="py-op">=</tt> <tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">match</tt><tt class="py-op">(</tt><tt class="py-name">f</tt><tt class="py-op">.</tt><tt class="py-name">read</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">res</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">            <tt class="py-name">ret</tt> <tt class="py-op">=</tt> <tt class="py-name">res</tt><tt class="py-op">.</tt><tt class="py-name">groupdict</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">f</tt><tt class="py-op">.</tt><tt class="py-name">close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt>     </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">'total'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">ret</tt><tt class="py-op">[</tt><tt class="py-string">'total'</tt><tt class="py-op">]</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">'useper'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-string">"%.1f"</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">float</tt><tt class="py-op">(</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">'total'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">-</tt> <tt class="py-op">(</tt><tt class="py-name">float</tt><tt class="py-op">(</tt><tt class="py-name">ret</tt><tt class="py-op">[</tt><tt class="py-string">'free'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-name">float</tt><tt class="py-op">(</tt><tt class="py-name">ret</tt><tt class="py-op">[</tt><tt class="py-string">'buffer'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-name">float</tt><tt class="py-op">(</tt><tt class="py-name">ret</tt><tt class="py-op">[</tt><tt class="py-string">'cache'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">/</tt> <tt class="py-op">(</tt><tt class="py-name">float</tt><tt class="py-op">(</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">'total'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">*</tt> <tt class="py-number">1.0</tt><tt class="py-op">)</tt> <tt class="py-op">*</tt> <tt class="py-number">100</tt><tt class="py-op">)</tt>   </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt id="link-13" class="py-name"><a title="src.output.Output" class="py-name" href="#" onclick="return doclink('link-13', 'Output', 'link-5');">Output</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method src.output.Output.outputData()=src.output.Output-class.html#outputData"><a title="src.output.Output.outputData" class="py-name" href="#" onclick="return doclink('link-14', 'outputData', 'link-14');">outputData</a></tt><tt class="py-op">(</tt><tt class="py-op">{</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__class__</tt><tt class="py-op">.</tt><tt class="py-name">__name__</tt><tt class="py-op">:</tt><tt class="py-name">data</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Apr 27 14:04:34 2013
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

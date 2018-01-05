@@ -47,7 +47,7 @@ class Msar(Console, ICop):
 
         # argument parser
         self.parser.add_argument('-c', '--cron', type=int,
-                                 help='Run like Crond')
+                                 help='Continue to run N times')
         self.parser.add_argument('-o', '--output',
                                  help='Output path')
         self.parser.add_argument('-f', '--flow', action='store_true',
@@ -68,7 +68,7 @@ class Msar(Console, ICop):
         # init plugins
         for p in self.plugins:
             print('{:>20}'.format(p.__class__.__name__))
-            p.init(self)
+            p.constructor(self)
 
         if len(sys.argv[1:]) == 0:
             self.parser.print_help()
@@ -121,6 +121,7 @@ class Msar(Console, ICop):
 
     # really run!
     def _run_once(self):
+        print('{}._run_once'.format(self.__class__.__name__))
         # Run plugins
         for p in self.plugins:
             p.run()
@@ -150,5 +151,4 @@ class Msar(Console, ICop):
 
 
 if __name__ == '__main__':
-    sar = Msar()
-    sar.run()
+    Msar().run()

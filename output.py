@@ -22,6 +22,7 @@ class Output(object):
         self._url = url
 
     def outputData(self, data):
+        print('Output Data type is {}'.format(type(data)))
         if type(data) is types.DictType:
             self.data.update(data)
             return
@@ -62,7 +63,7 @@ class Output(object):
         try:
             fs = open(self._url, 'w+')
             sys.stdout = fs
-            print (self.data)
+            print(self.data)
         except:
             pass
         sys.stdout = saveout
@@ -75,19 +76,19 @@ class Output(object):
             # we are in top level
             self.print_title_depth = 0
             if isinstance(_v, dict):
-                print ('{:+{align}{width}}'.format(_k, align='^', width=20 + len(_k)))
+                print('{:+{align}{width}}'.format(_k, align='^', width=20 + len(_k)))
                 self._print_mod(_v)
             else:
                 # there is someting wrong!!
                 continue
-            print ('')
+            print('')
 
     def _print_mod(self, data):
         for _k, _v in data.items():
             self.print_title_depth += 1
             if isinstance(_v, dict):
-                print (_k, '>' * 10)
+                print(_k, '>' * 10)
                 self._print_mod(_v)
             else:
-                print (_k, ':', _v, '\t')
-        print ('')
+                print(_k, ':', _v, '\t')
+        print('')

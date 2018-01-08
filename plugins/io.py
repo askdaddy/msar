@@ -169,7 +169,7 @@ class record(object):
 
 class IO(IPlugin):
     def constructor(self, cop):
-        print ('{}.init'.format(self.__class__.__name__))
+        # print ('{}.init'.format(self.__class__.__name__))
         self.cop = cop
         cop.add_argument('--io', action='store_true',
                          help='Linux I/O performance')

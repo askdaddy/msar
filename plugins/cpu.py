@@ -14,7 +14,7 @@ class Cpu(IPlugin):
     cop = None
 
     def constructor(self, cop):
-        print ('{}.init'.format(self.__class__.__name__))
+        # print ('{}.init'.format(self.__class__.__name__))
         self.cop = cop
         cop.add_argument('--cpu', action='store_true',
                          help='CPU share (user, system, interrupt, nice, & idle)')

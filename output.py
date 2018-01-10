@@ -8,10 +8,11 @@ from __future__ import print_function
 
 import socket
 import sys
-import types
-
+import json
 
 # from mysql.connector import Connect
+import time
+
 
 class Output(object):
     def __init__(self, root):
@@ -22,8 +23,7 @@ class Output(object):
         self._url = url
 
     def outputData(self, data):
-        print('Output Data type is {}'.format(type(data)))
-        if type(data) is types.DictType:
+        if isinstance(data, dict):
             self.data.update(data)
             return
 
@@ -61,9 +61,11 @@ class Output(object):
         saveout = sys.stdout
         fs = None
         try:
-            fs = open(self._url, 'w+')
+            # self._url is a local file
+            fs = open(self._url, 'a+')
             sys.stdout = fs
-            print(self.data)
+            self.data['timestamp'] = time.time()
+            print(json.dumps(self.data), end='\n')
         except:
             pass
         sys.stdout = saveout
@@ -76,19 +78,19 @@ class Output(object):
             # we are in top level
             self.print_title_depth = 0
             if isinstance(_v, dict):
-                print('{:+{align}{width}}'.format(_k, align='^', width=20 + len(_k)))
+                print('{:+{align}{width}}'.format(_k, align='^', width=20))
                 self._print_mod(_v)
             else:
                 # there is someting wrong!!
                 continue
-            print('')
 
     def _print_mod(self, data):
         for _k, _v in data.items():
             self.print_title_depth += 1
             if isinstance(_v, dict):
-                print(_k, '>' * 10)
+                # this is a sub header ,it has sub data
+                print('>{:-{align}{width}}'.format(_k, align='<', width=10))
+                # print(_k, '>' * 10)
                 self._print_mod(_v)
             else:
-                print(_k, ':', _v, '\t')
-        print('')
+                print('{}: {}'.format(_k, _v))

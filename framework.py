@@ -102,12 +102,11 @@ class Console(object):
 
     def _signal_handler(self, signum, frame):
         if __debug__:
-            print ('signum: {}'.format(signum))
-            print ('frame: {}'.format(frame))
+            # print ('signum: {}'.format(signum))
+            # print ('frame: {}'.format(frame))
 
             if signum == signal.SIGINT or signum == signal.SIGTERM:
                 self._bToClose = True
-            print ('To close : {}'.format(self._bToClose))
 
     def isToClose(self):
         return self._bToClose

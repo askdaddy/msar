@@ -31,16 +31,12 @@ class Mem(IPlugin):
         stats = Stats()
 
         f = open(define.MEMINFO, 'r')
-        # p = re.compile(
-        #     r'MemTotal:\s*(?P<total>\d*).*MemFree:\s*(?P<free>\d*).*Buffers:\s*(?P<buffer>\d*).*Cached:\s*(?P<cache>\d*).*Active:\s*(?P<act>\d*).*Inactive:\s*(?P<inact>\d*).*',
-        #     re.IGNORECASE)
         p = re.compile(
             r'\w*:\s*(\d*).*',
             re.IGNORECASE
         )
 
         for line in f:
-            print(line)
             if 'MemTotal' in line:
                 res = p.match(line)
                 if res is not None:
@@ -67,9 +63,5 @@ class Mem(IPlugin):
                     stats.inact = res.group(1)
 
         f.close()
-
-        # data['useper'] = "%.1f" % (
-        #         (float(data['total']) - (float(ret['free']) + float(ret['buffer']) + float(ret['cache']))) / (
-        #         float(data['total']) * 1.0) * 100)
 
         self.cop.out({self.__class__.__name__: stats.__dict__})

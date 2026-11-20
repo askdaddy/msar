@@ -4,6 +4,8 @@
 
 Rust 只有一个 Cargo binary。`src/main.rs` 从 `args_os` 读取参数，选择帮助或包版本文本并写入 stdout。无参数等价于帮助；未知参数、额外参数和未实现功能写 stderr 并失败。输出写入失败不会静默成功；BrokenPipe 视为下游正常关闭。
 
+stdout 通过标准库复制 Unix 文件描述符，再由 `File` 写入；这使只读描述符产生的 `EBADF` 能传递出来，避免 `Stdout` 的兼容处理将其吞掉。副本在写入后关闭，原 stdout 保持由进程管理。
+
 当前依赖仅为 Rust 标准库；没有采样循环、平台采集、动态插件或指标 schema。旧 Python 仍与 Rust 并存，但 Rust 不导入、启动或依赖它。
 
 ## 目标边界（尚未实现）

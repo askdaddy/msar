@@ -1,5 +1,7 @@
 use std::env;
+use std::fs::File;
 use std::io::{self, Write};
+use std::os::fd::AsFd;
 use std::process::ExitCode;
 
 const HELP: &str = "msar - an all-in-one system CLI for Linux and macOS
@@ -31,7 +33,12 @@ fn main() -> ExitCode {
         }
     };
 
-    match io::stdout().lock().write_all(output.as_bytes()) {
+    // Stdout suppresses EBADF; File preserves write errors without owning fd 1.
+    let result = io::stdout()
+        .as_fd()
+        .try_clone_to_owned()
+        .and_then(|fd| File::from(fd).write_all(output.as_bytes()));
+    match result {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) if error.kind() == io::ErrorKind::BrokenPipe => ExitCode::SUCCESS,
         Err(error) => {

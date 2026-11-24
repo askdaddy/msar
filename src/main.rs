@@ -5,6 +5,7 @@
 //! JSONL output. Platform metric reads live in #4 (Linux) and #5 (macOS).
 
 mod cli;
+mod linux;
 mod metric;
 mod output;
 mod sample;
@@ -139,30 +140,50 @@ fn wait_or_shutdown(period: Duration) {
 }
 
 /// Sample every selected module in one shared window and write one report.
+///
+/// On Linux each module reads `/proc`; elsewhere every module reports
+/// unavailable fields so the keys stay present with `null` values.
 fn emit_round(args: &Args) -> Result<(), String> {
     let window = Window::start();
     let mut report = Report::new(hostname(), unix_timestamp());
+    let linux = linux::available();
 
-    // Modules without a backend yet still occupy their key with unavailable
-    // fields, so consumers can tell "not selected" from "no data".
     if args.modules.cpu {
-        window.fill(sample::DEFAULT_WINDOW);
-        report.insert("Cpu", cpu_placeholder());
+        report.insert(
+            "Cpu",
+            sample_module(&linux::Cpu, linux, &window, &["us", "sy", "id", "wa"]),
+        );
     }
     if args.modules.mem {
         report.insert(
             "Mem",
-            unavailable_fields(&["total", "free", "buffers", "cached", "available"]),
+            sample_module(
+                &linux::Mem,
+                linux,
+                &window,
+                &["total", "free", "buffers", "cached", "available"],
+            ),
         );
     }
     if args.modules.load {
-        report.insert("Load", unavailable_fields(&["load1", "load5", "load15"]));
+        report.insert(
+            "Load",
+            sample_module(&linux::Load, linux, &window, &["load1", "load5", "load15"]),
+        );
     }
+    // Io/Traffic must diff two snapshots, so each starts its own window: the
+    // shared one is idempotent and is already spent by the time Cpu finishes
+    // (plan v3).
     if args.modules.io {
-        report.insert("IO", MetricValues::new());
+        let io_window = Window::start();
+        report.insert("IO", sample_module(&linux::Io, linux, &io_window, &[]));
     }
     if args.modules.traffic {
-        report.insert("Traffic", MetricValues::new());
+        let traffic_window = Window::start();
+        report.insert(
+            "Traffic",
+            sample_module(&linux::Traffic, linux, &traffic_window, &[]),
+        );
     }
 
     match &args.output {
@@ -172,6 +193,20 @@ fn emit_round(args: &Args) -> Result<(), String> {
             let text = report.to_terminal();
             write_stdout_result(&text)
         }
+    }
+}
+
+/// Run one backend, or report its fields as unavailable away from Linux.
+fn sample_module(
+    backend: &impl metric::Metric,
+    linux: bool,
+    window: &Window,
+    fields: &[&str],
+) -> MetricValues {
+    if linux {
+        backend.sample(window)
+    } else {
+        unavailable_fields(fields)
     }
 }
 
@@ -186,11 +221,6 @@ fn write_stdout_result(text: &str) -> Result<(), String> {
         Err(error) if error.kind() == io::ErrorKind::BrokenPipe => Ok(()),
         Err(error) => Err(format!("cannot write stdout: {error}")),
     }
-}
-
-/// Legacy `Cpu` field names, all unavailable until #4/#5 provide a backend.
-fn cpu_placeholder() -> MetricValues {
-    unavailable_fields(&["us", "sy", "id", "wa"])
 }
 
 fn unavailable_fields(names: &[&str]) -> MetricValues {

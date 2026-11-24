@@ -4,7 +4,7 @@
 
 msar 的长期目标是在 Linux/Unix 下提供 all-in-one 系统 CLI。Rust 重写的第一阶段以 Linux/macOS 为目标，覆盖原 Python 版本的 CPU、内存、负载、磁盘 I/O 和网络流量监控；后续系统工具需单独立项。
 
-当前 Rust 只实现帮助、版本及参数/输出错误处理，没有监控后端、周期采样或指标输出。源码入口为 `src/main.rs`，构建元数据为 `Cargo.toml` / `Cargo.lock`，无第三方 Rust 依赖。
+当前 Rust 已实现参数解析、共享采样窗口、单次/周期运行、信号退出、终端与 JSONL 输出，以及错误可观察性；尚无平台监控后端，模块字段以 unavailable/null 报告。源码入口为 `src/main.rs`，模块包括 `src/cli.rs`、`src/sample.rs`、`src/metric.rs`、`src/output.rs`；构建元数据为 `Cargo.toml` / `Cargo.lock`，无第三方 Rust 依赖。
 
 旧 Python 入口 `msar.py` 经 `ICop.py` / `IPlugin.py` 加载 `plugins/`，由 `output.py` 输出。完整阅读记录及已知问题在[总览 #1](https://github.com/askdaddy/msar/issues/1)。历史版本的运行问题不应转化为 Rust 的兼容要求。
 

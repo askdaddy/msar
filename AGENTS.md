@@ -1,6 +1,6 @@
 # msar Agent 协作约束
 
-先阅读 [AGENTIC.md](AGENTIC.md)，再阅读当前 Issue 的完整正文、评论、标签和有效计划。长期目标是 Linux/Unix all-in-one 系统 CLI；首期只承诺 Linux/macOS 监控迁移。当前 Rust 入口仅有帮助和版本，不能将路线图当作已实现能力。
+先阅读 [AGENTIC.md](AGENTIC.md)，再阅读当前 Issue 的完整正文、评论、标签和有效计划。长期目标是 Linux/Unix all-in-one 系统 CLI；首期只承诺 Linux/macOS 监控迁移。当前 Rust 入口已支持模块选择、单次/周期采样、终端与 JSONL 输出，但平台指标读取仍待 #4/#5，模块字段以 unavailable/null 呈现；不能将路线图当作已实现能力。
 
 ## 开始工作
 

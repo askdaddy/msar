@@ -32,7 +32,7 @@ git ls-remote origin refs/heads/python-legacy
 
 ## 兼容与修正
 
-旧版 `--cpu`、`--mem`、`--load`、`--io`、`--traffic`、`-a` / `--all`、`-n` / `--interval`、`-o` / `--output` 的核心使用意图纳入 #3。当前 Rust 只接受帮助和版本；不能直接替换旧版监控调用。结构化输出的字段、数值类型、单位和兼容策略待 #3 冻结，不承诺 JSON 字节兼容。
+旧版 `--cpu`、`--mem`、`--load`、`--io`、`--traffic`、`-a` / `--all`、`-n` / `--interval`、`-o` / `--output` 的核心使用意图纳入 #3。Rust 已接受上述参数核心意图；模块数值在 #4/#5 落地前以 unavailable/null 呈现，因此尚不能直接替换旧版监控调用。结构化输出字段名沿用旧版，数值改为 JSON number（非字符串），不可用为 `null`，不承诺 JSON 字节兼容。
 
 迁移时修正已观察到的问题：CPU guest 重复计数和零差分；内存字段子串误匹配；磁盘行位置配对、现代设备名过滤和 tput 计算；网络接口名称、增删和计数回退；串行 sleep 导致窗口不一致；文件错误吞掉和资源未可靠关闭。旧 daemon/PID 辅助包含 Python 2 和无效调用，不作为可用功能照搬。
 

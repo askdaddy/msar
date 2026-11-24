@@ -14,6 +14,7 @@ cargo --version
 cargo build --locked
 cargo run --locked -- --help
 cargo run --locked -- --version
+cargo run --locked -- --cpu        # 单次采样（当前字段为 unavailable）
 ```
 
 Cargo.lock 随 binary 提交；新增依赖必须有计划依据并同步锁文件。目前无需下载第三方库。

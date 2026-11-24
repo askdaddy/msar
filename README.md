@@ -4,15 +4,20 @@
 
 ## 当前可用
 
-本分支已建立 Rust CLI 基础，支持无参数帮助、`-h` / `--help` 和 `-V` / `--version`。当前监控模块尚未实现；旧版监控参数会报错退出，不会返回模拟指标。当前验证环境为 macOS，Linux 验证由后续任务完成。
+Rust CLI 已支持模块选择、单次/周期采样、信号退出，以及终端和 JSONL 文件输出。平台指标读取尚未实现（Linux 见 #4，macOS 见 #5），因此每个模块当前以 `unavailable` / `null` 报告字段，不返回模拟指标。当前验证环境为 macOS，Linux 行为由后续任务验证。
 
 ```sh
 cargo build --locked
-cargo run --locked -- --help
-cargo run --locked -- --version
+cargo run --locked -- --help          # 无参数同样打印帮助
+cargo run --locked -- --cpu           # 单次采样，终端输出
+cargo run --locked -- -a -n 2 -o out.jsonl   # 每 2 秒一轮，追加 JSON 行
 ```
 
-需要 Rust/Cargo 1.85 或更新版本。1.85 是工程声明的最低版本；目前尚未验证最低版本兼容性。无需 Python 或第三方 Rust 库即可构建 Rust 入口。
+选项：`--cpu` `--mem` `--load` `--io` `--traffic` 选择模块，`-a/--all` 全选，`-n/--interval` 指定周期（省略值为 1 秒），`-o/--output` 追加本地 JSONL 文件，`-h/--help`、`-V/--version`。
+
+错误均可观察：无效间隔退出码 2；`-o` 指向 `http://` 或 `https://` 时明确拒绝（退出码 2），不会静默丢数据；输出文件不可写时退出码 1 并报告路径与原因。`SIGINT`/`SIGTERM` 在当前轮次结束后优雅退出。
+
+需要 Rust/Cargo 1.85 或更新版本。1.85 是工程声明的最低版本；目前尚未验证最低版本兼容性。构建不需要 Python 或第三方 Rust 库。
 
 ## 重写路线
 

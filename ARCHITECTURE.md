@@ -2,7 +2,7 @@
 
 ## 当前实现
 
-Rust 只有一个 Cargo binary。`src/main.rs` 从 `args_os` 读取参数，选择帮助或包版本文本并写入 stdout。无参数等价于帮助；未知参数、额外参数和未实现功能写 stderr 并失败。输出写入失败不会静默成功；BrokenPipe 视为下游正常关闭。
+Rust 只有一个 Cargo binary，分四个模块：`cli`（参数解析与输入校验）、`sample`（单调时钟共享窗口与差分保护）、`metric`（后端接口与不可用语义）、`output`（JSON/终端渲染与 JSONL 追加）。`src/main.rs` 负责装配、信号处理与退出码。无参数等价于帮助；未知参数、无效间隔与 HTTP 输出写 stderr 并退出 2；输出文件不可写退出 1。输出写入失败不会静默成功；BrokenPipe 视为下游正常关闭。平台指标读取由 #4/#5 通过 `Metric` trait 接入。
 
 stdout 通过标准库复制 Unix 文件描述符，再由 `File` 写入；这使只读描述符产生的 `EBADF` 能传递出来，避免 `Stdout` 的兼容处理将其吞掉。副本在写入后关闭，原 stdout 保持由进程管理。
 

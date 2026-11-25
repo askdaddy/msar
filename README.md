@@ -32,12 +32,15 @@ cargo run --locked -- -a -n 2 -o out.jsonl   # 每 2 秒一轮，追加 JSON 行
 
 监控范围包括 CPU、内存、负载、磁盘 I/O、网络流量。具体参数和数据契约在对应 Issue 中冻结，本表不代表它们已经实现。
 
+先看[安装与使用](INSTALL.md)：从源码安装、真实支持矩阵、与旧 Python 版的兼容差异和未验证限制。
+
 ## 项目文档
 
 - [Agent 协作约束](AGENTS.md)与[项目上下文入口](AGENTIC.md)
 - [架构与模块边界](ARCHITECTURE.md)
 - [开发流程与命令](DEVELOPMENT.md)
 - [验收方法与证据限制](VERIFICATION.md)
+- [安装与使用](INSTALL.md)
 - [Python 版本及迁移说明](MIGRATION.md)
 
 旧 Python 默认分支快照保存在远端 [`python-legacy`](https://github.com/askdaddy/msar/tree/python-legacy)。当前目录中的旧源码仍保留供对照；Rust 首批交付不表示全量重写完成。仓库尚未确定许可证，本次不新增授权声明。

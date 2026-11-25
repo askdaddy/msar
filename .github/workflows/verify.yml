@@ -1,0 +1,91 @@
+name: verify
+
+# Cross-platform build and black-box verification for issue #6.
+#
+# Builds and checks the CLI contract on the three targets that can be verified
+# here: x86_64 Linux, macOS arm64 and aarch64 Linux. Windows is deliberately
+# absent, because it has not been verified (see INSTALL.md). Nothing is
+# released, tagged or merged from this workflow.
+#
+# Actions are pinned to a major tag; bump them together with the notes in
+# README.md.
+
+on:
+  push:
+    branches: ["ng", "riper/*"]
+  pull_request:
+    branches: ["ng"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-x86_64
+            os: ubuntu-latest
+          - name: macos-arm64
+            os: macos-latest
+          - name: linux-aarch64
+            os: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Format
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --locked --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test --locked
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Black-box contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          binary=target/release/msar
+          "$binary" -V
+          "$binary" --help >/dev/null
+          "$binary" --cpu >/dev/null
+          "$binary" --mem --load --io --traffic >/dev/null
+          round=$(mktemp -d)/round.jsonl
+          "$binary" -a -o "$round"
+          python3 - "$round" <<'PY'
+          import json, sys
+          payload = json.loads(open(sys.argv[1]).read())
+          missing = [k for k in ("Cpu", "Mem", "Load", "IO", "Traffic") if k not in payload]
+          assert not missing, f"missing modules: {missing}"
+          for module, values in payload.items():
+              if module in {"hostname", "timestamp"}:
+                  continue
+              for field, value in values.items():
+                  assert value is None or isinstance(value, (int, float)), (
+                      f"{module}.{field}={value!r}"
+                  )
+          print("contract OK")
+          PY
+
+      - name: Unknown option is rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          if target/release/msar --nope >/dev/null 2>&1; then
+            echo "unsupported option was accepted" >&2
+            exit 1
+          fi
+          echo "unknown option rejected"

@@ -5,6 +5,7 @@
 //! JSONL output. Platform metric reads live in #4 (Linux) and #5 (macOS).
 
 mod cli;
+mod darwin;
 mod linux;
 mod metric;
 mod output;
@@ -20,6 +21,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use cli::{Action, Args, Mode};
+use metric::Metric;
 use metric::MetricValues;
 use output::Report;
 use sample::Window;
@@ -91,6 +93,14 @@ fn write_stdout(text: &str) -> ExitCode {
 fn run(args: Args) -> ExitCode {
     install_signal_handlers();
 
+    // CPU counters are 32 bits and the baseline must be one window old, so take
+    // it once here, before the first round; re-priming per round would reset
+    // the baseline right before sample() reads it again and yield a zero delta
+    // (plan v2 step 9).
+    if args.modules.cpu && Platform::detect() == Platform::Darwin {
+        darwin::Cpu.prime();
+    }
+
     let period = match args.mode {
         Mode::Once => None,
         Mode::Repeat { period } => Some(Duration::from_secs(period.max(1))),
@@ -146,20 +156,19 @@ fn wait_or_shutdown(period: Duration) {
 fn emit_round(args: &Args) -> Result<(), String> {
     let window = Window::start();
     let mut report = Report::new(hostname(), unix_timestamp());
-    let linux = linux::available();
+    let platform = Platform::detect();
 
     if args.modules.cpu {
         report.insert(
             "Cpu",
-            sample_module(&linux::Cpu, linux, &window, &["us", "sy", "id", "wa"]),
+            sample_cpu(platform, &window, &["us", "sy", "id", "wa"]),
         );
     }
     if args.modules.mem {
         report.insert(
             "Mem",
-            sample_module(
-                &linux::Mem,
-                linux,
+            sample_mem(
+                platform,
                 &window,
                 &["total", "free", "buffers", "cached", "available"],
             ),
@@ -168,22 +177,18 @@ fn emit_round(args: &Args) -> Result<(), String> {
     if args.modules.load {
         report.insert(
             "Load",
-            sample_module(&linux::Load, linux, &window, &["load1", "load5", "load15"]),
+            sample_load(platform, &window, &["load1", "load5", "load15"]),
         );
     }
     // Io/Traffic must diff two snapshots, so each starts its own window: the
-    // shared one is idempotent and is already spent by the time Cpu finishes
-    // (plan v3).
+    // shared one is idempotent and is already spent by the time Cpu finishes.
     if args.modules.io {
         let io_window = Window::start();
-        report.insert("IO", sample_module(&linux::Io, linux, &io_window, &[]));
+        report.insert("IO", sample_io(platform, &io_window));
     }
     if args.modules.traffic {
         let traffic_window = Window::start();
-        report.insert(
-            "Traffic",
-            sample_module(&linux::Traffic, linux, &traffic_window, &[]),
-        );
+        report.insert("Traffic", sample_traffic(platform, &traffic_window));
     }
 
     match &args.output {
@@ -196,17 +201,64 @@ fn emit_round(args: &Args) -> Result<(), String> {
     }
 }
 
-/// Run one backend, or report its fields as unavailable away from Linux.
-fn sample_module(
-    backend: &impl metric::Metric,
-    linux: bool,
-    window: &Window,
-    fields: &[&str],
-) -> MetricValues {
-    if linux {
-        backend.sample(window)
-    } else {
-        unavailable_fields(fields)
+/// Which platform's data sources this build can use.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Platform {
+    Linux,
+    Darwin,
+    Unsupported,
+}
+
+impl Platform {
+    fn detect() -> Self {
+        if linux::available() {
+            Self::Linux
+        } else if darwin::available() {
+            Self::Darwin
+        } else {
+            Self::Unsupported
+        }
+    }
+}
+
+/// Run the selected backend, or report its fields as unavailable.
+fn sample_cpu(platform: Platform, window: &Window, fields: &[&str]) -> MetricValues {
+    match platform {
+        Platform::Linux => linux::Cpu.sample(window),
+        Platform::Darwin => darwin::Cpu.sample(window),
+        Platform::Unsupported => unavailable_fields(fields),
+    }
+}
+
+fn sample_mem(platform: Platform, window: &Window, fields: &[&str]) -> MetricValues {
+    match platform {
+        Platform::Linux => linux::Mem.sample(window),
+        Platform::Darwin => darwin::Mem.sample(window),
+        Platform::Unsupported => unavailable_fields(fields),
+    }
+}
+
+fn sample_load(platform: Platform, window: &Window, fields: &[&str]) -> MetricValues {
+    match platform {
+        Platform::Linux => linux::Load.sample(window),
+        Platform::Darwin => darwin::Load.sample(window),
+        Platform::Unsupported => unavailable_fields(fields),
+    }
+}
+
+fn sample_io(platform: Platform, window: &Window) -> MetricValues {
+    match platform {
+        Platform::Linux => linux::Io.sample(window),
+        Platform::Darwin => darwin::Io.sample(window),
+        Platform::Unsupported => MetricValues::new(),
+    }
+}
+
+fn sample_traffic(platform: Platform, window: &Window) -> MetricValues {
+    match platform {
+        Platform::Linux => linux::Traffic.sample(window),
+        Platform::Darwin => darwin::Traffic.sample(window),
+        Platform::Unsupported => MetricValues::new(),
     }
 }
 

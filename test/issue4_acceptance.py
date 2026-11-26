@@ -81,15 +81,16 @@ ON_LINUX = None
 
 
 def on_linux():
-    """Whether the binary reads real Linux /proc data."""
+    """Whether the binary reads real Linux /proc data.
+
+    This used to mean "any CPU field is not None", which stopped identifying
+    Linux once #5 gave macOS real values too: the probe then reported Linux on
+    macOS and ran every /proc check against macOS data. Linux is decided by the
+    /proc source itself, which is what the binary uses to pick its backend.
+    """
     global ON_LINUX
     if ON_LINUX is None:
-        try:
-            cpu = sample_jsonl("--cpu")["Cpu"]
-        except (AssertionError, KeyError, json.JSONDecodeError):
-            ON_LINUX = False
-        else:
-            ON_LINUX = any(value is not None for value in cpu.values())
+        ON_LINUX = os.path.exists("/proc/stat") and os.path.exists("/proc/meminfo")
     return ON_LINUX
 
 
@@ -323,7 +324,11 @@ class Issue4(unittest.TestCase):
                 subprocess.run(
                     [BINARY, "-a", "-n", "1", "-o", str(path)],
                     capture_output=True,
-                    timeout=4,
+                    # A round is about 2.6 s on macOS (#3 measured 2.55 s: a
+                    # 1000 ms CPU window plus the 250 ms Io and Traffic
+                    # windows plus the 1 s interval), so two rounds need more
+                    # than the old 4 s budget.
+                    timeout=8,
                 )
             except subprocess.TimeoutExpired:
                 pass

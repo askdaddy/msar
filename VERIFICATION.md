@@ -38,7 +38,11 @@ python3 test/cli_smoke.py target/debug/msar
 
 ## 证据边界
 
-当前验证环境为 macOS arm64 和 Rust/Cargo 1.97.1。没有 Linux 行为、Rust 1.85 MSRV、核心指标正确性或跨平台 CI 的通过证据。它们属于后续任务；本期 CLI 验收不能替代监控验收（#4/#5）。`cargo test` 覆盖窗口差分保护、参数解析、JSON 渲染与文件追加的单元级断言，不能当作进程级黑盒验证。
+当前验证环境为 macOS arm64 和 Rust/Cargo 1.97.1。
+
+已发生的证据：#4 交付 Linux 后端并经 `debian:13` 容器在 x86_64 与 aarch64 两个架构上实跑；#5 交付 macOS 后端并与 `sysctl`/`vm_stat`/`iostat`/`netstat` 逐项对照；#6 建立 `.github/workflows/verify.yml` 在三个平台的 CI 矩阵（run [45543393256](https://github.com/askdaddy/msar/actions/runs/45543393256) 全部 success）。`test/` 下有三个套件：`cli_smoke.py`（CLI 契约与参数错误）、`issue3_acceptance.py`（采样与输出流程）、`issue4_acceptance.py`（Linux 后端，在非 Linux 上跳过 `/proc` 检查）。
+
+仍未验证：Windows、其它 Unix、Rust 1.85 MSRV、macOS CPU 采样窗口在其他机型上的普适性。见 [INSTALL.md](INSTALL.md) 的未验证清单。`cargo test` 覆盖窗口差分保护、参数解析、JSON 渲染与文件追加的单元级断言，不能当作进程级黑盒验证；上面的容器实跑与 CI 才是平台级证据。
 
 未来监控验收需要固定样本验证计数差分和单位、设备增删/重置、不可用指标、信号退出、输出失败，以及对应平台的实机或 CI 行为证据。具体标准在对应 Issue 中冻结，不追溯添加为当前基础 Issue 的通过门槛。
 

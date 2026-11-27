@@ -27,7 +27,13 @@ class CliSmoke(unittest.TestCase):
                 self.assertEqual(result.returncode, 0)
                 self.assertEqual(result.stderr, b"")
                 self.assertEqual(result.stdout, expected)
-                for text in [b"Usage: msar", b"--help", b"--version", b"monitoring is planned"]:
+                for text in [
+                        b"Usage: msar",
+                        b"--help",
+                        b"--version",
+                        b"Platform metric reads are delivered by",
+                        b"unavailable",
+                    ]:
                     self.assertIn(text, result.stdout)
 
     def test_version(self):
@@ -39,19 +45,36 @@ class CliSmoke(unittest.TestCase):
                 self.assertEqual(result.stderr, b"")
 
     def test_invalid_arguments(self):
-        cases = [(arg,) for arg in [
-            "--unknown", "file.txt", "未知参数", "--cpu", "--mem", "--load",
-            "--io", "--traffic", "-a", "--all", "-n", "--interval", "-o", "--output",
-        ]]
-        cases += [("--help", "extra"), ("--version", "--help"), ("--help", "--unknown")]
+        # Only inputs that still fail belong here. The module flags and the
+        # mixed help/version forms are accepted since #3 and are covered by
+        # test_accepted_arguments.
+        cases = [(arg,) for arg in ["--unknown", "file.txt", "未知参数"]]
+        # -n/-o without their argument also still fail, but their message names
+        # the requirement rather than repeating the flag, so they assert only the
+        # shared shape: empty stdout, an `msar:` line and the help hint.
+        cases += [(arg,) for arg in ["-n", "--interval", "-o", "--output"]]
         for args in cases:
             with self.subTest(args=args):
                 result = self.invoke(*args)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual(result.stdout, b"")
-                self.assertIn(os.fsencode(args[-1]), result.stderr)
+                if args[-1] in {"--unknown", "file.txt", "未知参数"}:
+                    self.assertIn(os.fsencode(args[-1]), result.stderr)
                 self.assertIn(b"msar:", result.stderr)
                 self.assertIn(b"--help", result.stderr)
+                self.assertNotIn(b"panicked", result.stderr)
+
+    def test_accepted_arguments(self):
+        accepted = [
+            "--cpu", "--mem", "--load", "--io", "--traffic", "-a", "--all",
+            "--help", "extra", "--version", "--help", "--help", "--unknown",
+        ]
+        cases = [(arg,) for arg in accepted[:7]]
+        cases += [("--help", "extra"), ("--version", "--help"), ("--help", "--unknown")]
+        for args in cases:
+            with self.subTest(args=args):
+                result = self.invoke(*args)
+                self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertNotIn(b"panicked", result.stderr)
 
     @unittest.skipUnless(os.name == "posix", "Unix OS arguments required")
